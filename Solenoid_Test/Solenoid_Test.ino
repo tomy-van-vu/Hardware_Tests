@@ -1,18 +1,25 @@
 
 #define BAUD_RATE       9600
 #define SOLENOID_PIN    8
-#define ON_DUTY_CYCLE   1500  // milliseconds
+#define ON_TIME         1000  // milliseconds, need to get actual values
+#define OFF_TIME        1000  // milliseconds, need to get actual values
+#define DUTY_CYCLE      66    // percentage
 
 #define AUTO_OFF        
 
 bool solenoid_active;
+int on_time_limit;
 unsigned long time_activated;
+
 
 void setup() {
   Serial.begin(BAUD_RATE);
   pinMode(SOLENOID_PIN, OUTPUT);
   solenoid_active = false;
 
+
+  // on_time_limit = DUTY_CYCLE * (ON_TIME + OFF_TIME) / 100;
+  on_time_limit = 1500;
 }
 
 void loop() {
@@ -20,7 +27,7 @@ void loop() {
   do_stuff(command);
 
   #ifdef AUTO_OFF
-  if ((solenoid_active == true) && (millis() - time_activated >= ON_DUTY_CYCLE)) {
+  if ((solenoid_active == true) && (millis() - time_activated >= on_time_limit)) {
     solenoid_off();
   }
   
